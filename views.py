@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 from models import Conta, Historico
 from connection import engine
 from enums import Bancos, Status, Tipos
-from datetime import date
+from datetime import date, timedelta
 
 def criar_conta(conta: Conta):
     with Session(engine) as session:
@@ -73,8 +73,16 @@ def total_contas():
         total = 0
         for conta in contas:
             total += conta.valor
-    return total
+    return float(total)
 
+def buscar_historicos_entre_datas(data_inicio: date, data_fim: date):
+    with Session(engine) as session:
+        statement = select(Historico).where(
+            Historico.data >= data_inicio,
+            Historico.data <= data_fim
+        )
+        result = session.exec(statement).all()
+    return result
 
 # conta = Conta(valor=0, banco=Bancos.ITAU)
 # criar_conta(conta)
@@ -83,4 +91,6 @@ def total_contas():
 # transferir_saldo(1, 2, 10)
 # historico = Historico(conta_id=2, tipos=Tipos.ENTRADA, valor=10, data=date.today())
 # movimentar_dinheiro(historico)
-print(total_contas())
+# print(total_contas())
+x = buscar_historicos_entre_datas(date.today() - timedelta(days=5), date.today())
+print(x)
