@@ -51,7 +51,7 @@ def movimentar_dinheiro(historico: Historico):
     with Session(engine) as session:
         statement = select(Conta).where(Conta.id == historico.conta_id)
         conta = session.exec(statement).first()
-        # TODO: Validar se a conta está ativa
+
         if conta.status == Status.INATIVO:
             raise ValueError("Conta inativa")
 
@@ -65,6 +65,16 @@ def movimentar_dinheiro(historico: Historico):
         session.add(historico)
         session.commit()
         return historico
+    
+def total_contas():
+    with Session(engine) as session:
+        statement = select(Conta)
+        contas = session.exec(statement).all()
+        total = 0
+        for conta in contas:
+            total += conta.valor
+    return total
+
 
 # conta = Conta(valor=0, banco=Bancos.ITAU)
 # criar_conta(conta)
@@ -73,3 +83,4 @@ def movimentar_dinheiro(historico: Historico):
 # transferir_saldo(1, 2, 10)
 # historico = Historico(conta_id=2, tipos=Tipos.ENTRADA, valor=10, data=date.today())
 # movimentar_dinheiro(historico)
+print(total_contas())
