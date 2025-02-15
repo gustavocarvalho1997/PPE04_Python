@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from sqlmodel import Session, select
 from models import Conta, Historico
 from connection import engine
@@ -84,13 +85,11 @@ def buscar_historicos_entre_datas(data_inicio: date, data_fim: date):
         result = session.exec(statement).all()
     return result
 
-# conta = Conta(valor=0, banco=Bancos.ITAU)
-# criar_conta(conta)
-# print(listar_contas())
-# desativar_conta(3)
-# transferir_saldo(1, 2, 10)
-# historico = Historico(conta_id=2, tipos=Tipos.ENTRADA, valor=10, data=date.today())
-# movimentar_dinheiro(historico)
-# print(total_contas())
-x = buscar_historicos_entre_datas(date.today() - timedelta(days=5), date.today())
-print(x)
+def criar_grafico_por_conta():
+    with Session(engine) as session:
+        statement = select(Conta).where(Conta.status == Status.ATIVO)
+        contas = session.exec(statement).all()
+        labels = [conta.banco.value for conta in contas]
+        valores = [conta.valor for conta in contas]
+        plt.bar(labels, valores)
+        plt.show()
