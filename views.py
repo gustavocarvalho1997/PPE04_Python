@@ -56,12 +56,15 @@ def movimentar_dinheiro(historico: Historico):
         if conta.status == Status.INATIVO:
             raise ValueError("Conta inativa")
 
+        print(historico.tipos)
+
         if historico.tipos == Tipos.ENTRADA:
             conta.valor += historico.valor
-        else:
+        
+        if historico.tipos == Tipos.SAIDA:
             if conta.valor < historico.valor:
                 raise ValueError("Saldo insuficiente")
-            conta.valor -= historico.valor
+            conta.valor -= historico.valor 
         
         session.add(historico)
         session.commit()
