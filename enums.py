@@ -12,3 +12,7 @@ class Bancos(Enum):
 class Status(Enum):
     ATIVO = "Ativo"
     INATIVO = "Inativo"
+
+class Tipos(Enum):
+    ENTRADA = "Entrada"
+    SAIDA = "Saída"
